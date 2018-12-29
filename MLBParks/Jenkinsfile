@@ -20,7 +20,10 @@ podTemplate(
     // You need to build the application in directory `MLBParks`.
     // Also copy "../nexus_settings.xml" to your build directory
     // and replace 'GUID' in the file with your ${GUID} to point to >your< Nexus instance
-	def mvnCmd = "mvn -s ../nexus_settings.xml clean package -DskipTests=true"
+	
+    // Define Maven Command to point to the correct
+    // settings for our Nexus installation
+    def mvnCmd = "mvn -s ../nexus_settings.xml clean package -DskipTests=true"
 
     // Checkout Source Code.
     stage('Checkout Source') {
@@ -153,6 +156,7 @@ podTemplate(
         // TBD: Execute switch
         sh "oc patch route mlbparks -n ${GUID}-parks-prod -p '{\"spec\":{\"to\":{\"name\":\"" + destApp + "\"}}}'"
       }
+    }
   }
 }
 
