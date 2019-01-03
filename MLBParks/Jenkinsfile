@@ -32,7 +32,8 @@ podTemplate(
     
     // Define Maven Command to point to the correct
     // settings for our Nexus installation
-    def mvnCmd = "mvn -s ./MLBParks/nexus_settings.xml clean package -DskipTests=true"    
+    sh "pwd"
+    def mvnCmd = "mvn -s nexus_settings.xml clean package -DskipTests=true"    
 
     // Build the MLBParks Service
     dir('MLBParks') {
