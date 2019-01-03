@@ -32,7 +32,7 @@ podTemplate(
 	  
     // Define Maven Command to point to the correct
     // settings for our Nexus installation
-    def mvnCmd = "mvn -s ../nexus_settings.xml clean package -Dmaven.test.skip=true"
+    def mvnCmd = "mvn -s nexus_settings.xml clean package -Dmaven.test.skip=true"
 
     // Build the Nationalparks Service
     dir('Nationalparks') {
