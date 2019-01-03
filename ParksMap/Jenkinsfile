@@ -1,4 +1,7 @@
 // Jenkinsfile for ParksMap
+GUID='test2'
+CLUSTER='na311.openshift.opentlc.com'
+
 podTemplate(
   label: "skopeo-pod",
   cloud: "openshift",
@@ -16,19 +19,21 @@ podTemplate(
     echo "GUID: ${GUID}"
     echo "CLUSTER: ${CLUSTER}"
 
-    // Your Pipeline Code goes here. Make sure to use the ${GUID} and ${CLUSTER} parameters where appropriate
-    // You need to build the application in directory `ParksMap`.
-    // Also copy "../nexus_settings.xml" to your build directory
-    // and replace 'GUID' in the file with your ${GUID} to point to >your< Nexus instance
-	
-    // Define Maven Command to point to the correct
-    // settings for our Nexus installation
-    def mvnCmd = "mvn -s ../nexus_settings.xml clean package spring-boot:repackage -DskipTests -Dcom.redhat.xpaas.repo.redhatga"
-
     // Checkout Source Code.
     stage('Checkout Source') {
       git url: 'https://github.com/akkarapol/advdev_homework_template.git'
     }
+	  
+    // Your Pipeline Code goes here. Make sure to use the ${GUID} and ${CLUSTER} parameters where appropriate
+    // You need to build the application in directory `ParksMap`.
+    // Also copy "../nexus_settings.xml" to your build directory
+    // and replace 'GUID' in the file with your ${GUID} to point to >your< Nexus instance
+    sh "cp ./nexus_settings.xml ./MLBParks/ -u"
+    sh "sed -i 's/GUID/${GUID}/' ./MLBParks/nexus_settings.xml"
+	  
+    // Define Maven Command to point to the correct
+    // settings for our Nexus installation
+    def mvnCmd = "mvn -s nexus_settings.xml clean package spring-boot:repackage -DskipTests -Dcom.redhat.xpaas.repo.redhatga"
 
     // Build the ParksMap Service
     dir('ParksMap') {
@@ -105,6 +110,13 @@ podTemplate(
         // TBD: Deploy to development Project
         //      Set Image, Set VERSION
         //      Make sure the application is running and ready before proceeding
+      }
+	    
+      stage('Integration Tests') {
+        echo "Running Integration Tests"
+        sleep 30
+        echo "ls ws info"
+        sh "curl -i -H 'Content-Length: 0' -X GET http://mlbparks-${GUID}-parks-dev.apps.${CLUSTER}/ws/info/"
       }
 
       // Copy Image to Nexus container registry
