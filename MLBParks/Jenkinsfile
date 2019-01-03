@@ -114,8 +114,10 @@ podTemplate(
       stage('Integration Tests') {
         echo "Running Integration Tests"
         sleep 30
-        echo "ls ws info"
-        sh "curl -i -H 'Content-Length: 0' -X GET http://mlbparks-${GUID}-parks-dev.apps.${CLUSTER}/ws/info/"
+        echo "MLB Parks ws check health"
+        sh "curl -i -H 'Content-Length: 0' -X GET http://nationalparks-${GUID}-parks-dev.apps.${CLUSTER}/ws/healthz/"
+        echo "MLB Parks ws ws info"
+        sh "curl -i -H 'Content-Length: 0' -X GET http://nationalparks-${GUID}-parks-dev.apps.${CLUSTER}/ws/info/"
       }
 
 
