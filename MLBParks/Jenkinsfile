@@ -25,7 +25,8 @@ podTemplate(
 	
     // Define Maven Command to point to the correct
     // settings for our Nexus installation
-    export GUID=${GUID}
+    echo "start ${GUID}"
+    export GUID='${GUID}'
     echo "export = ${GUID}"  
     def mvnCmd = "mvn -s ../nexus_settings.xml clean package -DskipTests=true"
 
