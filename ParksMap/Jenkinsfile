@@ -116,9 +116,9 @@ podTemplate(
         echo "Running Integration Tests"
         sleep 30
         echo "Parksmap ws List backend"
-        sh "curl -i -H 'Content-Length: 0' -X GET http://parksmap-${GUID}-parks-dev.apps.${CLUSTER}/ws/backends/list/"
+        sh "curl -i -H 'Content-Length: 0' -X GET http://parksmap-dev-${GUID}-parks-dev.apps.${CLUSTER}/ws/backends/list/"
 	echo "Parksmap ws Return Application Name"
-        sh "curl -i -H 'Content-Length: 0' -X GET http://parksmap-${GUID}-parks-dev.apps.${CLUSTER}/ws/appname/"
+        sh "curl -i -H 'Content-Length: 0' -X GET http://parksmap-dev-${GUID}-parks-dev.apps.${CLUSTER}/ws/appname/"
       }
 
       // Copy Image to Nexus container registry
