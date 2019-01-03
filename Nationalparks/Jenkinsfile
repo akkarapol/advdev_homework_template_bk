@@ -16,19 +16,20 @@ podTemplate(
     echo "GUID: ${GUID}"
     echo "CLUSTER: ${CLUSTER}"
 
-    // Your Pipeline Code goes here. Make sure to use the ${GUID} and ${CLUSTER} parameters where appropriate
-    // You need to build the application in directory `Nationalparks`.
-    // Also copy "../nexus_settings.xml" to your build directory
-    // and replace 'GUID' in the file with your ${GUID} to point to >your< Nexus instance
-	
-    // Define Maven Command to point to the correct
-    // settings for our Nexus installation
-    def mvnCmd = "mvn -s ../nexus_settings.xml clean package -Dmaven.test.skip=true"
-
     // Checkout Source Code.
     stage('Checkout Source') {
       git url: 'https://github.com/akkarapol/advdev_homework_template.git'
     }
+    // Your Pipeline Code goes here. Make sure to use the ${GUID} and ${CLUSTER} parameters where appropriate
+    // You need to build the application in directory `Nationalparks`.
+    // Also copy "../nexus_settings.xml" to your build directory
+    // and replace 'GUID' in the file with your ${GUID} to point to >your< Nexus instance
+    sh "cp ./nexus_settings.xml ./Nationalparks/ -u"
+    sh "sed -i 's/GUID/${GUID}/' ./Nationalparks/nexus_settings.xml"
+	  
+    // Define Maven Command to point to the correct
+    // settings for our Nexus installation
+    def mvnCmd = "mvn -s ../nexus_settings.xml clean package -Dmaven.test.skip=true"
 
     // Build the Nationalparks Service
     dir('Nationalparks') {
@@ -105,6 +106,13 @@ podTemplate(
         // TBD: Deploy to development Project
         //      Set Image, Set VERSION
         //      Make sure the application is running and ready before proceeding
+      }
+	    
+      stage('Integration Tests') {
+        echo "Running Integration Tests"
+        sleep 30
+        echo "ls ws info"
+        sh "curl -i -H 'Content-Length: 0' -X GET http://nationalparks-${GUID}-parks-dev.apps.${CLUSTER}/ws/info/"
       }
 
       // Copy Image to Nexus container registry
